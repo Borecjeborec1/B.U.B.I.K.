@@ -4,9 +4,13 @@ const open = require('open');
 const robot = require('robotjs');
 const tldr = require('wikipedia-tldr');
 const { exec } = require('child_process');
+const fetch = require('node-fetch');
+
+const changeBG = require('./changeBG');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+// frontendSetup();
 
 app.use(express.json());
 app.use(cors());
@@ -129,5 +133,22 @@ function hospodaSingle() {
   robot.moveMouse(1065, 943);
   robot.mouseClick();
   robot.setMouseDelay(250);
+  robot.mouseClick();
+}
+app.get('/startup', async (req, res) => {
+  let changedBG = await changeBG();
+  let nameDay = await fetch('https://svatky.adresa.info/json').then((res) => res.json());
+  let resObj = {
+    didChangedBG: changedBG,
+    nameDay: nameDay,
+  };
+  res.send(resObj);
+});
+async function frontendSetup() {
+  robot.moveMouse(41, 139);
+  robot.mouseClick();
+  robot.mouseClick();
+  robot.setMouseDelay(2500);
+  robot.moveMouse(930, 450);
   robot.mouseClick();
 }
