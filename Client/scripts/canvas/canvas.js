@@ -158,7 +158,7 @@ myImage.addEventListener('load', function () {
   let bigCounter = 0;
   let opac = 0.02;
   function animate() {
-    if (counterr < 900) {
+    if (counterr < 1300) {
       counterr++;
       counterr % 10 == 0 ? smallCounter++ : 0;
       counterr % 5 == 0 ? midCounter++ : 0;

@@ -10,7 +10,7 @@ const changeBG = require('./changeBG');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-// frontendSetup();
+frontendSetup();
 
 app.use(express.json());
 app.use(cors());
