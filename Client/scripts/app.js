@@ -37,7 +37,7 @@ document.getElementById('start').addEventListener('click', () => {
   function addLoginCommands() {
     artyom.addCommands([
       {
-        indexes: ['i am robin', "i'm robin", 'i am rubbing ', "i'm rubbing ", 'i am luke', "i'm luke"],
+        indexes: ['i am robin', "i'm robin", 'i am rubbing ', "i'm rubbing ", 'i am luke', "i'm luke", "I'm leaving"],
         action: (i) => {
           if (lastCommand != 'author login') {
             logged = 'author';
@@ -47,6 +47,16 @@ document.getElementById('start').addEventListener('click', () => {
                 speaking = true;
               },
               onEnd: function () {
+                setTimeout(() => {
+                  artyom.say('Welcome back sir!', {
+                    onStart: function () {
+                      speaking = true;
+                    },
+                    onEnd: function () {
+                      speaking = false;
+                    },
+                  });
+                }, 100);
                 speaking = false;
                 canDo = false;
               },
@@ -61,11 +71,21 @@ document.getElementById('start').addEventListener('click', () => {
             logged = 'guest';
             lastCommand = 'guest login';
 
-            artyom.say('Systems are now prepared. What do you need from me princess?', {
+            artyom.say('Systems are now prepared.', {
               onStart: function () {
                 speaking = true;
               },
               onEnd: function () {
+                setTimeout(() => {
+                  artyom.say('Welcome back Elizabeth!', {
+                    onStart: function () {
+                      speaking = true;
+                    },
+                    onEnd: function () {
+                      speaking = false;
+                    },
+                  });
+                }, 100);
                 speaking = false;
                 canDo = false;
               },
@@ -1003,35 +1023,85 @@ document.getElementById('start').addEventListener('click', () => {
     ]);
   }
 
-  setTimeout(() => {
-    artyom.say('All systems will be prepared in a few seconds.', {
-      onStart: function () {
-        setTimeout(() => {
-          artyom.say(
-            "Allow me to introduce myself. I am boobeek, virtual artificial intelligence and I'm here to assist you with a variety of tasks as best as I can. Who are you?",
-            {
+  setTimeout(async () => {
+    let startupInfo = await fetch('http://localhost:3000/startup').then((res) => res.json());
+    let sayBG = startupInfo.didChangedBG ? 'Changing the daily home Interface!' : 'Fetching data from Lainux database!';
+    artyom.say(
+      "Allow me to introduce myself. I am boobeek, virtual artificial intelligence and I'm here to assist you with a variety of tasks as best as I can!",
+      {
+        onStart: function () {
+          speaking = true;
+        },
+        onEnd: function () {
+          setTimeout(() => {
+            artyom.say(sayBG, {
               onStart: function () {
                 speaking = true;
               },
               onEnd: function () {
-                speaking = false;
                 setTimeout(() => {
-                  if (logged == 'author') {
-                    console.log('Logged as author');
-                    addBonusCommands();
-                    addCommands();
-                  } else if (logged == 'guest') {
-                    console.log('Logged as guest');
-                    addCommands();
-                  }
-                }, 7000);
-                addLoginCommands();
+                  artyom.say('Importing all preferences from home interface. ', {
+                    onStart: function () {
+                      speaking = true;
+                    },
+                    onEnd: function () {
+                      setTimeout(() => {
+                        artyom.say('Setting up the Time enviroment. ', {
+                          onStart: function () {
+                            speaking = true;
+                          },
+                          onEnd: function () {
+                            let today = new Date();
+                            artyom.say(
+                              'Today is ' +
+                                dayNames[today.getDay()] +
+                                ' ' +
+                                today.getDate() +
+                                ' ' +
+                                monthNames[today.getMonth()] +
+                                today.getFullYear() +
+                                " and it's " +
+                                startupInfo.nameDay[0].name +
+                                "'s " +
+                                'name day!',
+                              {
+                                onStart: function () {
+                                  speaking = true;
+                                },
+                                onEnd: function () {
+                                  setTimeout(() => {
+                                    artyom.say('Accessing the Windows profile. Please authorize!', {
+                                      onStart: function () {
+                                        speaking = true;
+                                      },
+                                      onEnd: function () {
+                                        setTimeout(() => {
+                                          if (logged == 'author') {
+                                            addBonusCommands();
+                                            addCommands();
+                                          } else if (logged == 'guest') {
+                                            addCommands();
+                                          }
+                                        }, 7000);
+                                        addLoginCommands();
+                                      },
+                                    });
+                                  }, 150);
+                                },
+                              }
+                            );
+                          },
+                        });
+                      }, 150);
+                    },
+                  });
+                }, 150);
               },
-            }
-          );
-        }, 5000);
-      },
-    });
+            });
+          }, 200);
+        },
+      }
+    );
   }, 1000);
 });
 
