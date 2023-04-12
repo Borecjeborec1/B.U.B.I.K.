@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "node start.js",
+    "dev": "node ./runDev.js",
+    "build": "pyinstaller index.spec --workpath tmp/",
+    "cmds": "node ./generators/all-cmds.js"
+  },
+  "dependencies": {
+    "pequena": "^1.0.9"
+  }
+}
